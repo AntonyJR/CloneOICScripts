@@ -32,8 +32,12 @@ TGT_OIC_PASSWORD=
 IMPORT_STATE="ImportOnly"
 
 # Flags used in request
-# -k Insecure, ignore bad certificates
-# -v Verbose
+# -k
+#   Insecure, ignore bad certificates
+# -v
+#   Verbose
+# -w HTTP_STATUS=%{http_code}
+#   Show HTTP status code
 CURL_FLAGS=""
 
 #
