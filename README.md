@@ -35,6 +35,16 @@ The following environment variables are set in the [env.sh] file.
 | TGT_OIC_HOST | Base URL of OIC Instance to receive import  Should be of the form https://oicinstance.integration.ocp.oraclecloud.com. | [export.sh] [export_status.sh] |
 | TGT_OIC_USERNAME | IDCS Username with Admin Privileges | [export.sh] [export_status.sh] |
 | TGT_OIC_PASSWORD | IDCS Password | [import.sh] [import_status.sh] |
+| CURL_FLAGS | Flags passed to curl command | [import.sh], [import_status.sh], [list_bucket.sh], [export.sh], [export_status.sh] |
+
+#### CURL_FLAGS Explained
+The CURL_FLAGS are applied to all REST calls and allow additional information to be output.  Flags that have been verified to work are:
+* -v
+    * Verbose output, including SSL handshake
+* -k
+    * Ignore certification validation errors - should not be necessary
+* -w HTTP_STATUS=%{http_code}
+    * Output the HTTP Status returned from the command.  Useful in debugging.
 
 ## Example Exporting from an OIC Instance
 Run the export command:
