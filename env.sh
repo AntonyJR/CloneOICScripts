@@ -14,6 +14,20 @@ STORAGE_BUCKET=
 STORAGE_USER=
 STORAGE_PASSWORD=
 
+# Replica is only used by the copy_export.sh script to copy the export from one bucket to another.
+# Using Object Storage replication does not help here as replica storage buckets are read only and the
+# import operation requires a writeable bucket for unzipping archives and writing log files.
+# REPLICA_STORAGE_REGION is OCI region us-region-1, eu-frankfurt-1 etc.
+# REPLICA_STORAGE_TENANCY is tenancy name used when logging in
+# REPLICA_STORAGE_BUCKET is bucket used to store exported archive
+# REPLICA_STORAGE_USER should be prefaced by "oracleidentitycloudservice/" if using IDCS federated user
+# REPLICA_STORAGE PASSWORD is OCI Auth Token
+REPLICA_STORAGE_REGION=
+REPLICA_STORAGE_TENANCY=
+REPLICA_STORAGE_BUCKET=
+REPLICA_STORAGE_USER=
+REPLICA_STORAGE_PASSWORD=
+
 # SOURCE OIC
 # User needs Admin Role
 # Host format https://hostname
@@ -29,7 +43,7 @@ TGT_OIC_USERNAME=
 TGT_OIC_PASSWORD=
 
 # Possible Values: ImportOnly ActivateOnly ImportActivate
-IMPORT_STATE="ImportOnly"
+IMPORT_STATE=
 
 # Flags used in request
 # -k
@@ -38,7 +52,7 @@ IMPORT_STATE="ImportOnly"
 #   Verbose
 # -w HTTP_STATUS=%{http_code}
 #   Show HTTP status code
-CURL_FLAGS=""
+CURL_FLAGS="-w HTTP_STATUS=%{http_code}"
 
 #
 # Helper Functions used to Validate Variables have Values
@@ -70,6 +84,21 @@ get_storage_credentials() {
   read_if_empty STORAGE_USER "Storage Username (preface with oracleidentitycloudservice/ if using IDCS) > "
   read_if_empty STORAGE_PASSWORD "Storage Password > " -s
   STORAGE_CREDENTIALS="${STORAGE_USER}:${STORAGE_PASSWORD}"
+}
+
+# Generates REPLICA_STORAGE_URL
+get_replica_storage_url() {
+  read_if_empty REPLICA_STORAGE_REGION "Replica Storage Region > "
+  read_if_empty REPLICA_STORAGE_TENANCY "Replica Storage Tenancy Name > "
+  read_if_empty REPLICA_STORAGE_BUCKET "Replica Storage Bucket > "
+  REPLICA_STORAGE_URL=https://swiftobjectstorage.${REPLICA_STORAGE_REGION}.oraclecloud.com/v1/${REPLICA_STORAGE_TENANCY}/${REPLICA_STORAGE_BUCKET}
+}
+
+# Generates STORAGE CREDENTIALS
+get_replica_storage_credentials() {
+  read_if_empty REPLICA_STORAGE_USER "Replica Storage Username (preface with oracleidentitycloudservice/ if using IDCS) > "
+  read_if_empty REPLICA_STORAGE_PASSWORD "Replica Storage Password > " -s
+  REPLICA_STORAGE_CREDENTIALS="${REPLICA_STORAGE_USER}:${REPLICA_STORAGE_PASSWORD}"
 }
 
 # Generates SRC_OIC_CREDENTIALS
