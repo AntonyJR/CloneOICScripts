@@ -22,5 +22,5 @@ curl ${CURL_FLAGS} -X PUT -u "${REPLICA_STORAGE_CREDENTIALS}" -T $1 \
      -H "Content-Type: application/octet-stream" \
      ${REPLICA_STORAGE_URL}/
 
-#REMOVE DOWNLAODED ARCHIVE
+#REMOVE DOWNLOADED ARCHIVE
 rm $1
