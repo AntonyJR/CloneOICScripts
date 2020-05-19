@@ -50,9 +50,9 @@ IMPORT_STATE=
 #   Insecure, ignore bad certificates
 # -v
 #   Verbose
-# -w HTTP_STATUS=%{http_code}
+# -w \nHTTP_STATUS=%{http_code}\n
 #   Show HTTP status code
-CURL_FLAGS="-w HTTP_STATUS=%{http_code}"
+CURL_FLAGS=""
 
 #
 # Helper Functions used to Validate Variables have Values
