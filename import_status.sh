@@ -1,14 +1,9 @@
 #!/bin/bash
 . ./env.sh
 
-# JOB ID REQUIRED
-if [ "$1" == "" ]; then
-    echo Job ID required
-    exit -1
-fi
-
-get_tgt_oic_host
-get_tgt_oic_credentials
+get_job_id "$1"
+get_tgt_oic_host "$2"
+get_tgt_oic_credentials "$3" "$4"
 
 # GET STATUS
-curl ${CURL_FLAGS} -X GET -u ${TGT_OIC_CREDENTIALS} ${TGT_OIC_HOST}/ic/api/common/v1/importServiceInstanceArchive/$1
+curl ${CURL_FLAGS} -X GET -u "${TGT_OIC_CREDENTIALS}" ${TGT_OIC_HOST}/ic/api/common/v1/importServiceInstanceArchive/"$JOB_ID"

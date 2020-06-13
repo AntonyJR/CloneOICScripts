@@ -1,59 +1,5 @@
 #!/bin/bash
 
-# STORAGE
-# OIC Docs https://docs.oracle.com/en/cloud/paas/integration-cloud/integration-cloud-auton/export-integration-and-process-design-time-metadata-instances.html
-# OIC Docs https://docs.oracle.com/en/cloud/paas/integration-cloud/ics-pcs-migration-to-oci-b/step-3-create-object-storage-bucket-and-construct-storage-url.html
-# STORAGE_REGION is OCI region us-region-1, eu-frankfurt-1 etc.
-# STORAGE_TENANCY is tenancy name used when logging in
-# STORAGE_BUCKET is bucket used to store exported archive
-# STORAGE_USER should be prefaced by "oracleidentitycloudservice/" if using IDCS federated user
-# STORAGE PASSWORD is OCI Auth Token
-STORAGE_REGION=
-STORAGE_TENANCY=
-STORAGE_BUCKET=
-STORAGE_USER=
-STORAGE_PASSWORD=
-
-# Replica is only used by the copy_export.sh script to copy the export from one bucket to another.
-# Using Object Storage replication does not help here as replica storage buckets are read only and the
-# import operation requires a writeable bucket for unzipping archives and writing log files.
-# REPLICA_STORAGE_REGION is OCI region us-region-1, eu-frankfurt-1 etc.
-# REPLICA_STORAGE_TENANCY is tenancy name used when logging in
-# REPLICA_STORAGE_BUCKET is bucket used to store exported archive
-# REPLICA_STORAGE_USER should be prefaced by "oracleidentitycloudservice/" if using IDCS federated user
-# REPLICA_STORAGE PASSWORD is OCI Auth Token
-REPLICA_STORAGE_REGION=
-REPLICA_STORAGE_TENANCY=
-REPLICA_STORAGE_BUCKET=
-REPLICA_STORAGE_USER=
-REPLICA_STORAGE_PASSWORD=
-
-# SOURCE OIC
-# User needs Admin Role
-# Host format https://hostname
-SRC_OIC_HOST=
-SRC_OIC_USERNAME=
-SRC_OIC_PASSWORD=
-
-# TARGET OIC
-# User needs Admin Role
-# Host format https://hostname
-TGT_OIC_HOST=
-TGT_OIC_USERNAME=
-TGT_OIC_PASSWORD=
-
-# Possible Values: ImportOnly ActivateOnly ImportActivate
-IMPORT_STATE=
-
-# Flags used in request
-# -k
-#   Insecure, ignore bad certificates
-# -v
-#   Verbose
-# -w \nHTTP_STATUS=%{http_code}\n
-#   Show HTTP status code
-CURL_FLAGS=""
-
 #
 # Helper Functions used to Validate Variables have Values
 #
@@ -73,14 +19,29 @@ read_if_empty() {
 
 # Generates STORAGE_URL
 get_storage_url() {
+  if [ "$1" != "" ]; then
+    STORAGE_REGION="$1"
+  fi
+  if [ "$2" != "" ]; then
+    STORAGE_TENANCY="$2"
+  fi
+  if [ "$3" != "" ]; then
+    STORAGE_BUCKET="$3"
+  fi
   read_if_empty STORAGE_REGION "Storage Region > "
   read_if_empty STORAGE_TENANCY "Storage Tenancy Name > "
   read_if_empty STORAGE_BUCKET "Storage Bucket > "
-  STORAGE_URL=https://swiftobjectstorage.${STORAGE_REGION}.oraclecloud.com/v1/${STORAGE_TENANCY}/${STORAGE_BUCKET}
+  STORAGE_URL="https://swiftobjectstorage.${STORAGE_REGION}.oraclecloud.com/v1/${STORAGE_TENANCY}/${STORAGE_BUCKET}"
 }
 
 # Generates STORAGE CREDENTIALS
 get_storage_credentials() {
+  if [ "$1" != "" ]; then
+    STORAGE_USER="$1"
+  fi
+  if [ "$2" != "" ]; then
+    STORAGE_PASSWORD="$2"
+  fi
   read_if_empty STORAGE_USER "Storage Username (preface with oracleidentitycloudservice/ if using IDCS) > "
   read_if_empty STORAGE_PASSWORD "Storage Password > " -s
   STORAGE_CREDENTIALS="${STORAGE_USER}:${STORAGE_PASSWORD}"
@@ -88,14 +49,29 @@ get_storage_credentials() {
 
 # Generates REPLICA_STORAGE_URL
 get_replica_storage_url() {
+  if [ "$1" != "" ]; then
+    REPLICA_STORAGE_REGION="$1"
+  fi
+  if [ "$2" != "" ]; then
+    REPLICA_STORAGE_TENANCY="$2"
+  fi
+  if [ "$3" != "" ]; then
+    REPLICA_STORAGE_BUCKET="$3"
+  fi
   read_if_empty REPLICA_STORAGE_REGION "Replica Storage Region > "
   read_if_empty REPLICA_STORAGE_TENANCY "Replica Storage Tenancy Name > "
   read_if_empty REPLICA_STORAGE_BUCKET "Replica Storage Bucket > "
-  REPLICA_STORAGE_URL=https://swiftobjectstorage.${REPLICA_STORAGE_REGION}.oraclecloud.com/v1/${REPLICA_STORAGE_TENANCY}/${REPLICA_STORAGE_BUCKET}
+  REPLICA_STORAGE_URL="https://swiftobjectstorage.${REPLICA_STORAGE_REGION}.oraclecloud.com/v1/${REPLICA_STORAGE_TENANCY}/${REPLICA_STORAGE_BUCKET}"
 }
 
 # Generates STORAGE CREDENTIALS
 get_replica_storage_credentials() {
+  if [ "$1" != "" ]; then
+    REPLICA_STORAGE_USER="$1"
+  fi
+  if [ "$2" != "" ]; then
+    REPLICA_STORAGE_PASSWORD="$2"
+  fi
   read_if_empty REPLICA_STORAGE_USER "Replica Storage Username (preface with oracleidentitycloudservice/ if using IDCS) > "
   read_if_empty REPLICA_STORAGE_PASSWORD "Replica Storage Password > " -s
   REPLICA_STORAGE_CREDENTIALS="${REPLICA_STORAGE_USER}:${REPLICA_STORAGE_PASSWORD}"
@@ -103,6 +79,12 @@ get_replica_storage_credentials() {
 
 # Generates SRC_OIC_CREDENTIALS
 get_src_oic_credentials() {
+  if [ "$1" != "" ]; then
+    SRC_OIC_USERNAME="$1"
+  fi
+  if [ "$2" != "" ]; then
+    SRC_OIC_PASSWORD="$2"
+  fi
   read_if_empty SRC_OIC_USERNAME "Source OIC Username > "
   read_if_empty SRC_OIC_PASSWORD "Source OIC Password > " -s
   SRC_OIC_CREDENTIALS="${SRC_OIC_USERNAME}:${SRC_OIC_PASSWORD}"
@@ -110,6 +92,12 @@ get_src_oic_credentials() {
 
 # Generates TGT_OIC_CREDENTIALS
 get_tgt_oic_credentials() {
+  if [ "$1" != "" ]; then
+    TGT_OIC_USERNAME="$1"
+  fi
+  if [ "$2" != "" ]; then
+    TGT_OIC_PASSWORD="$2"
+  fi
   read_if_empty TGT_OIC_USERNAME "Target OIC Username > "
   read_if_empty TGT_OIC_PASSWORD "Target OIC Password > " -s
   TGT_OIC_CREDENTIALS="${TGT_OIC_USERNAME}:${TGT_OIC_PASSWORD}"
@@ -117,10 +105,142 @@ get_tgt_oic_credentials() {
 
 # Generate SRC_OIC_HOST
 get_src_oic_host () {
+  if [ "$1" != "" ]; then
+    SRC_OIC_HOST="$1"
+  fi
   read_if_empty SRC_OIC_HOST "Source OIC base URL (https://host.domain.com) > "
 }
 
 # Generate TGT_OIC_HOST
 get_tgt_oic_host () {
+  if [ "$1" != "" ]; then
+    TGT_OIC_HOST="$1"
+  fi
   read_if_empty TGT_OIC_HOST "Target OIC base URL (https://host.domain.com) > "
+}
+
+# Get EXPORTED_FILENAME
+get_exported_filename() {
+  if [ "$1" != "" ]; then
+    EXPORTED_FILENAME="$1"
+  fi
+  read_if_empty EXPORTED_FILENAME "Exported Filename > "
+}
+
+# GET IMPORT_STATE
+get_import_state() {
+  if [ "$1" != "" ]; then
+    IMPORT_STATE="$1"
+  fi
+  read_if_empty IMPORT_STATE "Import State ( ImportOnly / ActivateOnly / ImportActivate ) > "
+  if [[ ! "${IMPORT_STATE}" =~ ^("ImportOnly"|"ActivateOnly"|"ImportActivate")$ ]]; then
+    echo Import State must be one of ImportOnly, ActivateOnly or ImportActivate
+    exit 2
+  fi
+}
+
+# Get JOB_ID
+get_job_id() {
+  if [ "$1" != "" ]; then
+    JOB_ID="$1"
+  fi
+  read_if_empty JOB_ID "Job ID > "
+}
+
+# Get INTEGRATION_ID
+get_integration() {
+  if [ "$1" != "" ]; then
+    INTEGRATION_ID="$1"
+  fi
+  read_if_empty INTEGRATION_ID "Integration ID > "
+}
+
+# Get COMPARTMENT_ID
+get_compartment() {
+  if [ "$1" != "" ]; then
+    COMPARTMENT_ID="$1"
+  fi
+  read_if_empty COMPARTMENT_ID "Compartment ID > "
+}
+
+# Get REGION
+get_region() {
+  if [ "$1" != "" ]; then
+    REGION="$1"
+  fi
+  read_if_empty REGION "Region > "
+}
+
+# GET DISPLAY_NAME
+get_display_name() {
+  if [ "$1" != "" ]; then
+    DISPLAY_NAME="$1"
+  fi
+  read_if_empty DISPLAY_NAME "Display Name > "
+}
+
+# GET IS_BYOL
+get_is_byol() {
+  if [ "$1" != "" ]; then
+    IS_BYOL="$1"
+  fi
+  read_if_empty IS_BYOL "Is BYOL ( true / false ) > "
+  if [[ ! "${IS_BYOL}" =~ ^("true"|"false")$ ]]; then
+    echo Is BYOL must be one of true or false
+    exit 2
+  fi
+}
+
+# GET MESSAGE_PACKS
+get_message_packs() {
+  if [ "$1" != "" ]; then
+    MESSAGE_PACKS="$1"
+  fi
+  read_if_empty MESSAGE_PACKS "Message Packs > "
+}
+
+# GET TYPE
+get_type() {
+  if [ "$1" != "" ]; then
+    TYPE="$1"
+  fi
+  read_if_empty TYPE "Type ( ENTERPRISE / STANDARD ) > "
+  if [[ ! "${TYPE}" =~ ^("ENTERPRISE"|"STANDARD")$ ]]; then
+    echo Type must be one of ENTERPRISE or STANDARD
+    exit 2
+  fi
+}
+
+# GET IDCS_AT
+get_idcs_at() {
+  if [ "$1" != "" ]; then
+    IDCS_URL="$1"
+  fi
+  if [ "$2" != "" ]; then
+    IDCS_CLIENT_ID="$2"
+  fi
+  if [ "$3" != "" ]; then
+    IDCS_CLIENT_SECRET="$3"
+  fi
+  if [ "$4" != "" ]; then
+    IDCS_USERNAME="$4"
+  fi
+  if [ "$3" != "" ]; then
+    IDCS_PASSWORD="$5"
+  fi
+  read_if_empty IDCS_URL "IDCS_URL ( https://some.url ) > "
+  read_if_empty IDCS_CLIENT_ID "IDCS Client ID > "
+  read_if_empty IDCS_CLIENT_SECRET "IDCS Client Secret > " -s
+  read_if_empty IDCS_USERNAME "IDCS Username > "
+  read_if_empty IDCS_PASSWORD "IDCS Password > " -s
+
+  IDCS_AT=`curl "${CURL_FLAGS}" -u "$IDCS_CLIENT_ID:$IDCS_CLIENT_SECRET" -H "Content-Type: application/x-www-form-urlencoded;charset=UTF-8" --request POST $IDCS_URL/oauth2/v1/token -d "grant_type=password&scope=urn:opc:idm:__myscopes__&username=${IDCS_USERNAME}&password=${IDCS_PASSWORD}" | jq -r ".access_token"`
+}
+
+# GET WORK_REQUEST_ID
+get_work_request() {
+  if [ "$1" != "" ]; then
+    WORK_REQUEST_ID="$1"
+  fi
+  read_if_empty WORK_REQUEST_ID "Work Request ID > "
 }
