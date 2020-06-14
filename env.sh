@@ -17,20 +17,35 @@ read_if_empty() {
   done
 }
 
-# Generates STORAGE_URL
-get_storage_url() {
+# Generate STORAGE_REGION
+get_storage_region() {
   if [ "$1" != "" ]; then
     STORAGE_REGION="$1"
   fi
-  if [ "$2" != "" ]; then
-    STORAGE_TENANCY="$2"
-  fi
-  if [ "$3" != "" ]; then
-    STORAGE_BUCKET="$3"
-  fi
   read_if_empty STORAGE_REGION "Storage Region > "
+}
+
+# Generate STORAGE_TENANCY
+get_storage_tenancy() {
+  if [ "$1" != "" ]; then
+    STORAGE_TENANCY="$1"
+  fi
   read_if_empty STORAGE_TENANCY "Storage Tenancy Name > "
+}
+
+# Generate STORAGE_BUCKET
+get_storage_bucket() {
+  if [ "$1" != "" ]; then
+    STORAGE_BUCKET="$1"
+  fi
   read_if_empty STORAGE_BUCKET "Storage Bucket > "
+}
+
+# Generates STORAGE_URL
+get_storage_url() {
+  get_storage_region $1
+  get_storage_tenancy $2
+  get_storage_bucket $3
   STORAGE_URL="https://swiftobjectstorage.${STORAGE_REGION}.oraclecloud.com/v1/${STORAGE_TENANCY}/${STORAGE_BUCKET}"
 }
 
@@ -47,20 +62,35 @@ get_storage_credentials() {
   STORAGE_CREDENTIALS="${STORAGE_USER}:${STORAGE_PASSWORD}"
 }
 
-# Generates REPLICA_STORAGE_URL
-get_replica_storage_url() {
+# Generate REPLICA_STORAGE_REGION
+get_replica_storage_region() {
   if [ "$1" != "" ]; then
     REPLICA_STORAGE_REGION="$1"
   fi
-  if [ "$2" != "" ]; then
-    REPLICA_STORAGE_TENANCY="$2"
-  fi
-  if [ "$3" != "" ]; then
-    REPLICA_STORAGE_BUCKET="$3"
-  fi
   read_if_empty REPLICA_STORAGE_REGION "Replica Storage Region > "
+}
+
+# Generate REPLICA_STORAGE_TENANCY
+get_replica_storage_tenancy() {
+  if [ "$1" != "" ]; then
+    REPLICA_STORAGE_TENANCY="$1"
+  fi
   read_if_empty REPLICA_STORAGE_TENANCY "Replica Storage Tenancy Name > "
+}
+
+# Generate REPLICA_STORAGE_BUCKET
+get_replica_storage_bucket() {
+  if [ "$1" != "" ]; then
+    REPLICA_STORAGE_BUCKET="$1"
+  fi
   read_if_empty REPLICA_STORAGE_BUCKET "Replica Storage Bucket > "
+}
+
+# Generates REPLICA_STORAGE_URL
+get_replica_storage_url() {
+  get_storage_region $1
+  get_storage_tenancy $2
+  get_storage_bucket $3
   REPLICA_STORAGE_URL="https://swiftobjectstorage.${REPLICA_STORAGE_REGION}.oraclecloud.com/v1/${REPLICA_STORAGE_TENANCY}/${REPLICA_STORAGE_BUCKET}"
 }
 

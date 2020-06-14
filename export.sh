@@ -3,9 +3,9 @@
 
 # Generate Endpoints & Credentials
 # shellcheck disable=SC2086
-get_storage_url "$1" "$2" $3
+get_storage_url $1 $2 $3
 get_storage_credentials "$4" "$5"
-get_src_oic_host "$6"
+get_src_oic_host $6
 get_src_oic_credentials "$7" "$8"
 
 # START EXPORT

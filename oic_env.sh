@@ -18,7 +18,7 @@ export STORAGE_BUCKET=
 export STORAGE_USER=
 export STORAGE_PASSWORD=
 
-# Replica is only used by the copy_export.sh script to copy the export from one bucket to another.
+# Replica is only used by the copyExport.sh script to copy the export from one bucket to another.
 # Using Object Storage replication does not help here as replica storage buckets are read only and the
 # import operation requires a writeable bucket for unzipping archives and writing log files.
 # REPLICA_STORAGE_REGION is OCI region us-region-1, eu-frankfurt-1 etc.

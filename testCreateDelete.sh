@@ -21,8 +21,10 @@ rm ${testdir}/createTest
 
 echo CREATE STATUS TEST
 while [[ `./getWorkRequest.sh $WORK_REQUEST_ID | jq -r ".data.status"` != "SUCCEEDED" ]]; do
+  echo Waiting
   sleep 60
 done
+echo
 ./getWorkRequest.sh $WORK_REQUEST_ID
 INTEGRATION_ID=`./getWorkRequest.sh $WORK_REQUEST_ID | jq -r ".data.resources[0].identifier"`
 
@@ -36,8 +38,10 @@ rm ${testdir}/deleteTest
 
 echo DELETE STATUS TEST
 while [[ `./getWorkRequest.sh $WORK_REQUEST_ID | jq -r ".data.status"` != "SUCCEEDED" ]]; do
+  echo Waiting
   sleep 60
 done
+echo
 ./getWorkRequest.sh $WORK_REQUEST_ID
 
 rm -r ${testdir}

@@ -1,18 +1,50 @@
 #!/bin/bash
+
+testdir=$(mktemp -d "${TMPDIR:-/tmp/}$(basename $0).XXXXXXXXXXXX")
+
 echo IMPORT/EXPORT TESTS
 echo ===================
+
 echo EXPORT TEST
-JOB_ID=`./export.sh | tee | jq ".jobId"`
+./export.sh | tee ${testdir}/exportTest | jq
+JOB_ID=`jq -r ".jobId" < ${testdir}/exportTest`
+rm ${testdir}/exportTest
+
 echo EXPORT STATUS TEST
-while [[ `./export_status.sh $JOB_ID | jq ".overallStatus"` != "COMPLETED" ]]; do
+while [[ `./exportStatus.sh $JOB_ID  | jq -r ".overallStatus"` != COMPLETED ]]; do
+  echo Waiting
   sleep 60
 done
-EXPORT_FILE=`./export_status.sh $JOB_ID | tee | jq ".archiveName"`
+./exportStatus.sh $JOB_ID | jq
+EXPORT_FILE=`./exportStatus.sh $JOB_ID |  jq -r ".archiveName"`
+
 echo LIST BUCKET TEST
-./list_bucket.sh
+./listBucket.sh | jq
+
 echo COPY EXPORT TEST
-./copy_export.sh $EXPORT_FILE
+./copyExport.sh $EXPORT_FILE | tee ${testdir}/copyTest | jq
+JOB_ID=`jq -r ".jobId" < ${testdir}/copyTest`
+rm ${testdir}/copyTest
+
+echo COPY EXPORT STATUS TEST
+while [[ `./objectStatus.sh $JOB_ID | jq -r ".status"` != COMPLETED ]]; do
+  echo Waiting
+  sleep 60
+done
+echo
+./objectStatus.sh $JOB_ID
+
 echo IMPORT TEST
-JOB_ID=`./import.sh $EXPORT_FILE | jq ".jobId"`
+./import.sh | tee ${testdir}/importTest | jq
+JOB_ID=`jq -r ".jobId" < ${testdir}/importTest`
+rm ${testdir}/importTest
+
 echo IMPORT STATUS TEST
-./import_status.sh $JOB_ID
+while [[ `./importStatus.sh $JOB_ID  | jq -r ".overallStatus"` != "COMPLETED" ]]; do
+  echo Waiting
+  sleep 60
+done
+echo
+./importStatus.sh $JOB_ID
+
+rm -r ${testdir}
