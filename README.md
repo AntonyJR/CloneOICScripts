@@ -155,19 +155,19 @@ Check the file is in the target storage area:
 [OCI documentation]: https://docs.cloud.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm
 [OCI CLI OIC documentation]: https://docs.cloud.oracle.com/en-us/iaas/tools/oci-cli/latest/oci_cli_docs/cmdref/integration.html
 [jq]: https://stedolan.github.io/jq/download/
-[env.sh]: env.sh
-[export.sh]: export.sh
-[exportStatus.sh]: exportStatus.sh
-[import.sh]: import.sh
-[importStatus.sh]: importStatus.sh
-[listBucket.sh]: listBucket.sh
-[copyExport.sh]: copyExport.sh
-[copyStatus.sh]: copyStatus.sh
-[createIntegration.sh]: createIntegration.sh
-[deleteIntegration.sh]: deleteIntegration.sh
-[getIntegration.sh]: getIntegration.sh
-[getWorkRequest.sh]: getWorkRequest.sh
-[listCompartments.sh]: listCompartments.sh
-[listIntegrations.sh]: listIntegrations.sh
-[listRegions.sh]: listRegions.sh
+[env.sh]: scripts/env.sh
+[export.sh]: scripts/export.sh
+[exportStatus.sh]: scripts/exportStatus.sh
+[import.sh]: scripts/import.sh
+[importStatus.sh]: scripts/importStatus.sh
+[listBucket.sh]: scripts/listBucket.sh
+[copyExport.sh]: scripts/copyExport.sh
+[copyStatus.sh]: scripts/copyStatus.sh
+[createIntegration.sh]: scripts/createIntegration.sh
+[deleteIntegration.sh]: scripts/deleteIntegration.sh
+[getIntegration.sh]: scripts/getIntegration.sh
+[getWorkRequest.sh]: scripts/getWorkRequest.sh
+[listCompartments.sh]: scripts/listCompartments.sh
+[listIntegrations.sh]: scripts/listIntegrations.sh
+[listRegions.sh]: scripts/listRegions.sh
 [testOCI.sh]: testOCI.sh

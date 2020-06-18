@@ -1,6 +1,4 @@
 #!/bin/bash
-. ~/.bash_profile
-
 . ./env.sh
 
 get_work_request "$1"

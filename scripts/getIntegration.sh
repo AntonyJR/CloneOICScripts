@@ -1,6 +1,4 @@
 #!/bin/bash
-. ~/.bash_profile
-
 . ./env.sh
 
 get_integration "$1"
