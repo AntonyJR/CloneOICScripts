@@ -195,7 +195,7 @@ Check the file is in the target storage area:
 [testCreateDelete.sh]: testCreateDelete.sh
 [testExportImport.sh]: testExportImport.sh
 
-[DockerHub]: https://hub.docker.com/r/antonyjreynolds/cloneoicscripts
+[DockerHub]: https://hub.docker.com/r/antonyjreynolds/cloneoic
 [GitHub]: https://github.com/AntonyJR/CloneOICScripts
 
 [Python:3-slim]: https://hub.docker.com/_/python
