@@ -1,12 +1,15 @@
 # OIC Environment Clone Scripts
-These scripts provide a simplified way of running the import and export instance REST commands in OIC.
-The also provide support for creating and deleting OCI instances using the OCI command line.
+[This image][DockerHub] provide a simplified way of running the import and export instance REST commands in OIC.
+They also provide support for creating and deleting OCI instances using the OCI command line.
 See the [OIC documentation] for details on import / export.
 See the [OCI CLI OIC documentation] for details on creating and deleting OIC instances vi OCI CLI.
 To use the create and delete scripts it is necessary to have the OCI CLI tools setup, see the [OCI documentation] for details.
 If you are going to use the create script then it relies on [jq] which must be available on the system running the scripts.
 The test scripts also use [jq].
 See the [OIC documentation] for details.
+
+This image is built on top of the [Python:3-slim] image.
+A [github project][GitHub] contains the build instructions if a customized image is required.
 
 ## Scripts
 Following scripts are provided:
@@ -173,3 +176,8 @@ Check the file is in the target storage area:
 [listRegions.sh]: scripts/listRegions.sh
 [testCreateDelete.sh]: testCreateDelete.sh
 [testExportImport.sh]: testExportImport.sh
+
+[DockerHub]: https://hub.docker.com/r/antonyjreynolds/cloneoicscripts
+[GitHub]: https://github.com/AntonyJR/CloneOICScripts
+
+[Python:3-slim]: https://hub.docker.com/_/python
