@@ -112,51 +112,51 @@ The CURL_FLAGS are applied to all REST calls and allow additional information to
 ## Example Exporting from an OIC Instance
 Run the export command:
 ```shell script
-./export.sh
+export.sh
 ```
 > {"jobId":"142040","location":"https://swiftobjectstorage.eu-frankfurt-1.oraclecloud.com/v1/xxxxxx/migrationBucket","status":"NOT_STARTED"}
 
 Check the status of the export command:
 ```shell script
-./exportStatus.sh 142040
+exportStatus.sh 142040
 ```
 > {"jobId":"142040","jobType":"EXPORT","includeSecurityArtifacts":true,"overallStatus":"RUNNING","startTime":"Thu May 14 21:28:31 UTC 2020","components":[{"name":"Integration","status":"NOT_STARTED"},{"name":"Process","status":"NOT_STARTED"}]}
 
 Check it again:
 ```shell script
-./exportStatus.sh 142040
+exportStatus.sh 142040
 ```
 > {"jobId":"142040","jobType":"EXPORT","archiveName":"Local_Suite_Instance-142040.zip","includeSecurityArtifacts":true,"overallStatus":"COMPLETED","startTime":"Thu May 14 21:28:31 UTC 2020","endTime":"Thu May 14 21:55:57 UTC 2020","components":[{"name":"Integration","status":"COMPLETED","percentage":100},{"name":"Process","status":"COMPLETED","percentage":100}]}
 
 List files in OCI Bucket to make sure that it is there:
 ```shell script
-./listBucket.sh
+listBucket.sh
 ```
 > [{"name":"Local_Suite_Instance-142040.zip","hash":"8c1c0866ff0e7ff78441bc45cded6dfc","bytes":29688003,"last_modified":"2020-05-14T21:56:02.716000","content_type":null}]
 
 ## Example Importing to an OIC Instance
 Run the import command:
 ```shell script
-./import.sh Local_Suite_Instance-142040.zip
+import.sh Local_Suite_Instance-142040.zip
 ```
 > {"jobId":"1231","status":"NOT_STARTED"}
 
 Check the status of the import command:
 ```shell script
-./importStatus.sh 1231
+importStatus.sh 1231
 ```
 > {"jobId":"1231","jobType":"IMPORT","includeSecurityArtifacts":true,"overallStatus":"RUNNING","startTime":"Thu May 14 22:18:02 UTC 2020","mode":"ImportOnly","importScheduleParams":false,"startSchedules":false,"components":[{"name":"Integration","status":"NOT_STARTED"},{"name":"Process","status":"NOT_STARTED"}]}
 
 Check it again:
 ```shell script
-./importStatus.sh 1231
+importStatus.sh 1231
 ```
 > {"jobId":"1231","jobType":"IMPORT","includeSecurityArtifacts":true,"overallStatus":"RUNNING","startTime":"Thu May 14 22:18:02 UTC 2020","mode":"ImportOnly","importScheduleParams":false,"startSchedules":false,"components":[{"name":"Integration","status":"RUNNING"},{"name":"Process","status":"CANCELLED"}]}
 
 ## Example Moving Archive Between Buckets
 Run the copy command:
 ```shell script
-./copyExport.sh Local_Suite_Instance-329120.zip
+copyExport.sh Local_Suite_Instance-329120.zip
 ```
 >   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
 >                                  Dload  Upload   Total   Spent    Left  Speed
@@ -166,11 +166,181 @@ Run the copy command:
 > 
 > HTTP_STATUS=201
 
-Check the file is in the target storage area:
+## Example Creating an OIC Instance
+Run the create command:
 ```shell script
-./listBucket.sh
+createIntegration.sh
 ```
-> [{"name":"Local_Suite_Instance-329120.zip","hash":"48c481aeccdf0497d52f1e03f2fa783b","bytes":8111217,"last_modified":"2020-05-19T20:26:03.958000","content_type":null}]
+> Action completed. Waiting until the work request has entered state: ('ACCEPTED',)  
+>{  
+>  "data": {  
+>    "compartment-id": "ocid1.compartment.oc1..aaaaaaaackq6ccfxgzchfka57oifujjstupc2nftfgpi3ytpufuwrmijr6ea",  
+>    "id": "ocid1.integrationworkrequest.oc1.ap-melbourne-1.amaaaaaajfhkgfyan2mcuu2zhlb5ircql4orxpmbkzf2wkuujqzojpdhtsda",  
+>    "operation-type": "CREATE_INTEGRATION_INSTANCE",  
+>    "percent-complete": 0.0,  
+>    "resources": [  
+>      {  
+>        "action-type": "IN_PROGRESS",  
+>        "entity-type": "integrationInstance",  
+>        "entity-uri": "/integrationInstances/ocid1.integrationinstance.oc1.ap-melbourne-1.amaaaaaajfhkgfya3mvzrzq7zpls23oqdphwa5yxsp2n4kxjechcyvelhdlq",  
+>        "identifier": "ocid1.integrationinstance.oc1.ap-melbourne-1.amaaaaaajfhkgfya3mvzrzq7zpls23oqdphwa5yxsp2n4kxjechcyvelhdlq"  
+>      }  
+>    ],  
+>    "status": "ACCEPTED",  
+>    "time-accepted": "2020-06-19T06:47:36.505000+00:00",  
+>    "time-finished": null,  
+>    "time-started": null  
+>  },  
+>  "etag": "83d77c2e7ccc4f79251b2dfd1e9edb169d98634f5ab7a25bc41c0e77e8a6c347--gzip"
+>}
+
+Check the status of the create command:
+```shell script
+getWorkRequest.sh ocid1.integrationworkrequest.oc1.ap-melbourne-1.amaaaaaajfhkgfyan2mcuu2zhlb5ircql4orxpmbkzf2wkuujqzojpdhtsda  
+```
+> {  
+>  "data": {  
+>    "compartment-id": "ocid1.compartment.oc1..aaaaaaaackq6ccfxgzchfka57oifujjstupc2nftfgpi3ytpufuwrmijr6ea",  
+>    "id": "ocid1.integrationworkrequest.oc1.ap-melbourne-1.amaaaaaajfhkgfyan2mcuu2zhlb5ircql4orxpmbkzf2wkuujqzojpdhtsda",  
+>    "operation-type": "CREATE_INTEGRATION_INSTANCE",  
+>    "percent-complete": 53.0,  
+>    "resources": [  
+>      {  
+>        "action-type": "IN_PROGRESS",  
+>        "entity-type": "integrationInstance",  
+>        "entity-uri": "/integrationInstances/ocid1.integrationinstance.oc1.ap-melbourne-1.amaaaaaajfhkgfya3mvzrzq7zpls23oqdphwa5yxsp2n4kxjechcyvelhdlq",  
+>        "identifier": "ocid1.integrationinstance.oc1.ap-melbourne-1.amaaaaaajfhkgfya3mvzrzq7zpls23oqdphwa5yxsp2n4kxjechcyvelhdlq"  
+>      }  
+>    ],  
+>    "status": "IN_PROGRESS",  
+>    "time-accepted": "2020-06-19T06:47:36.505000+00:00",  
+>    "time-finished": null,  
+>    "time-started": "2020-06-19T06:47:44.465000+00:00"  
+>  },  
+>  "etag": "a3dd2623edf7efc8d55596169134c5bd274050bf9d11fad4d068bbce10925374--gzip"  
+>}
+
+Check it again:
+```shell script
+getWorkRequest.sh ocid1.integrationworkrequest.oc1.ap-melbourne-1.amaaaaaajfhkgfyan2mcuu2zhlb5ircql4orxpmbkzf2wkuujqzojpdhtsda  
+```
+> {  
+>  "data": {  
+>    "compartment-id": "ocid1.compartment.oc1..aaaaaaaackq6ccfxgzchfka57oifujjstupc2nftfgpi3ytpufuwrmijr6ea",  
+>    "id": "ocid1.integrationworkrequest.oc1.ap-melbourne-1.amaaaaaajfhkgfyan2mcuu2zhlb5ircql4orxpmbkzf2wkuujqzojpdhtsda",  
+>    "operation-type": "CREATE_INTEGRATION_INSTANCE",  
+>    "percent-complete": 100.0,  
+>    "resources": [  
+>      {  
+>        "action-type": "CREATED",  
+>        "entity-type": "integrationInstance",  
+>        "entity-uri": "/integrationInstances/ocid1.integrationinstance.oc1.ap-melbourne-1.amaaaaaajfhkgfya3mvzrzq7zpls23oqdphwa5yxsp2n4kxjechcyvelhdlq",  
+>        "identifier": "ocid1.integrationinstance.oc1.ap-melbourne-1.amaaaaaajfhkgfya3mvzrzq7zpls23oqdphwa5yxsp2n4kxjechcyvelhdlq"  
+>      }  
+>    ],  
+>    "status": "IN_PROGRESS",  
+>    "time-accepted": "2020-06-19T06:47:36.505000+00:00",  
+>    "time-finished": "2020-06-19T06:52:40.527000+00:00",  
+>    "time-started": "2020-06-19T06:47:44.465000+00:00"  
+>  },  
+>  "etag": "a3dd2623edf7efc8d55596169134c5bd274050bf9d11fad4d068bbce10925374--gzip"    
+>}
+
+List integrations in OCI Compartment to make sure that it is there:
+```shell script
+listIntegrations.sh
+```
+> +-----------+-----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------+
+> | Name      | OCID                                                                                                      | URL                                                                |
+> +-----------+-----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------+
+> | GoldImage | ocid1.integrationinstance.oc1.ap-melbourne-1.amaaaaaajfhkgfya3mvzrzq7zpls23oqdphwa5yxsp2n4kxjechcyvelhdlq | https://goldimage-oicpm-me.integration.ocp.oraclecloud.com/ic/home |
+> +-----------+-----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------+
+
+## Example Deleting an OIC Instance
+Run the delete command:
+```shell script
+deleteIntegration.sh ocid1.integrationinstance.oc1.ap-melbourne-1.amaaaaaajfhkgfya3mvzrzq7zpls23oqdphwa5yxsp2n4kxjechcyvelhdlq
+```
+> Action completed. Waiting until the work request has entered state: ('ACCEPTED',)  
+>{  
+>  "data": {  
+>    "compartment-id": "ocid1.compartment.oc1..aaaaaaaackq6ccfxgzchfka57oifujjstupc2nftfgpi3ytpufuwrmijr6ea",  
+>    "id": "ocid1.integrationworkrequest.oc1.ap-melbourne-1.amaaaaaajfhkgfyamnc34oexwqr6jzopwkz3r4zgrntahdao5tsnsdyoz2ca",  
+>    "operation-type": "DELETE_INTEGRATION_INSTANCE",  
+>    "percent-complete": 0.0,  
+>    "resources": [  
+>      {  
+>        "action-type": "IN_PROGRESS",  
+>        "entity-type": "integrationInstance",  
+>        "entity-uri": "/integrationInstances/ocid1.integrationinstance.oc1.ap-melbourne-1.amaaaaaajfhkgfya3mvzrzq7zpls23oqdphwa5yxsp2n4kxjechcyvelhdlq",  
+>        "identifier": "ocid1.integrationinstance.oc1.ap-melbourne-1.amaaaaaajfhkgfya3mvzrzq7zpls23oqdphwa5yxsp2n4kxjechcyvelhdlq"  
+>      }  
+>    ],  
+>    "status": "ACCEPTED",  
+>    "time-accepted": "2020-06-19T07:10:52.803000+00:00",  
+>    "time-finished": null,  
+>    "time-started": null  
+>  },  
+>  "etag": "50f8c6be644b026c58957de6c0fb611a4d0a859bf1cee197e49f48e878223568--gzip"
+>}
+
+Check the status of the delete command:
+```shell script
+getWorkRequest.sh ocid1.integrationworkrequest.oc1.ap-melbourne-1.amaaaaaajfhkgfyamnc34oexwqr6jzopwkz3r4zgrntahdao5tsnsdyoz2ca  
+```
+>{  
+>  "data": {  
+>    "compartment-id": "ocid1.compartment.oc1..aaaaaaaackq6ccfxgzchfka57oifujjstupc2nftfgpi3ytpufuwrmijr6ea",  
+>    "id": "ocid1.integrationworkrequest.oc1.ap-melbourne-1.amaaaaaajfhkgfyamnc34oexwqr6jzopwkz3r4zgrntahdao5tsnsdyoz2ca",  
+>    "operation-type": "DELETE_INTEGRATION_INSTANCE",  
+>    "percent-complete": 10.0,  
+>    "resources": [  
+>      {  
+>        "action-type": "IN_PROGRESS",  
+>        "entity-type": "integrationInstance",  
+>        "entity-uri": "/integrationInstances/ocid1.integrationinstance.oc1.ap-melbourne-1.amaaaaaajfhkgfya3mvzrzq7zpls23oqdphwa5yxsp2n4kxjechcyvelhdlq",  
+>        "identifier": "ocid1.integrationinstance.oc1.ap-melbourne-1.amaaaaaajfhkgfya3mvzrzq7zpls23oqdphwa5yxsp2n4kxjechcyvelhdlq"  
+>      }  
+>    ],  
+>    "status": "IN_PROGRESS",  
+>    "time-accepted": "2020-06-19T07:10:52.803000+00:00",  
+>    "time-finished": null,  
+>    "time-started": "2020-06-19T07:11:04.521000+00:00"  
+>  },  
+>  "etag": "7cf567a1e608a48cb66bf75b75c7a07f11774751c8f13e357b30592b1fb3f7db--gzip"
+>}
+
+Check it again:
+```shell script
+getWorkRequest.sh ocid1.integrationworkrequest.oc1.ap-melbourne-1.amaaaaaajfhkgfyamnc34oexwqr6jzopwkz3r4zgrntahdao5tsnsdyoz2ca  
+```
+>{  
+>  "data": {  
+>    "compartment-id": "ocid1.compartment.oc1..aaaaaaaackq6ccfxgzchfka57oifujjstupc2nftfgpi3ytpufuwrmijr6ea",  
+>    "id": "ocid1.integrationworkrequest.oc1.ap-melbourne-1.amaaaaaajfhkgfyamnc34oexwqr6jzopwkz3r4zgrntahdao5tsnsdyoz2ca",  
+>    "operation-type": "DELETE_INTEGRATION_INSTANCE",  
+>    "percent-complete": 100.0,  
+>    "resources": [  
+>      {  
+>        "action-type": "DELETED",  
+>        "entity-type": "integrationInstance",  
+>        "entity-uri": "/integrationInstances/ocid1.integrationinstance.oc1.ap-melbourne-1.amaaaaaajfhkgfya3mvzrzq7zpls23oqdphwa5yxsp2n4kxjechcyvelhdlq",  
+>        "identifier": "ocid1.integrationinstance.oc1.ap-melbourne-1.amaaaaaajfhkgfya3mvzrzq7zpls23oqdphwa5yxsp2n4kxjechcyvelhdlq"  
+>      }  
+>    ],  
+>    "status": "SUCCEEDED",  
+>    "time-accepted": "2020-06-19T07:10:52.803000+00:00",  
+>    "time-finished": "2020-06-19T07:19:33.508000+00:00",  
+>    "time-started": "2020-06-19T07:11:04.521000+00:00"  
+>  },  
+>  "etag": "03f1e28c46949c0f7418896e4fce116ce625df6223901d5ac840a986c1b97e0a--gzip"
+>}
+
+List integrations in OCI Compartment to make sure that it is no longer there:
+```shell script
+listIntegrations.sh
+```
+Empty Response
 
 [OIC Documentation]: https://docs.oracle.com/en/cloud/paas/integration-cloud/integration-cloud-auton/export-integration-and-process-design-time-metadata-instances.html
 [OCI Auth Token]: https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm#Working
@@ -178,6 +348,7 @@ Check the file is in the target storage area:
 [OCI CLI OIC documentation]: https://docs.cloud.oracle.com/en-us/iaas/tools/oci-cli/latest/oci_cli_docs/cmdref/integration.html
 [jq]: https://stedolan.github.io/jq/download/
 [env.sh]: scripts/env.sh
+[oic_env.sh]: scripts/oic_env.sh
 [export.sh]: scripts/export.sh
 [exportStatus.sh]: scripts/exportStatus.sh
 [import.sh]: scripts/import.sh
@@ -185,6 +356,7 @@ Check the file is in the target storage area:
 [listBucket.sh]: scripts/listBucket.sh
 [copyExport.sh]: scripts/copyExport.sh
 [copyStatus.sh]: scripts/copyStatus.sh
+[objectStatus.sh]: scripts/objectStatus.sh
 [createIntegration.sh]: scripts/createIntegration.sh
 [deleteIntegration.sh]: scripts/deleteIntegration.sh
 [getIntegration.sh]: scripts/getIntegration.sh

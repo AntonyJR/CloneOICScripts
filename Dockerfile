@@ -1,7 +1,7 @@
 FROM python:3-slim
 
 RUN apt-get update
-RUN apt-get install -y jq
+RUN apt-get install -y jq curl
 RUN pip install oci-cli
 
 ENV PATH=/oic:$PATH
