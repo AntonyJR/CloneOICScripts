@@ -32,7 +32,8 @@ Following scripts are provided:
 | [listCompartments.sh] | List all OCI compartments |
 | [listIntegrations.sh] | List instances in compartment |
 | [listRegions.sh] | List OCI Regions |
-| [testOCI.sh] | Tests for OCI scripts |
+| [testCreateDelete.sh] | Tests for creating and deleting OIC scripts |
+| [testExportImport.sh] | Tests for exporting and importing OIC scripts |
 
 
 
@@ -170,4 +171,5 @@ Check the file is in the target storage area:
 [listCompartments.sh]: scripts/listCompartments.sh
 [listIntegrations.sh]: scripts/listIntegrations.sh
 [listRegions.sh]: scripts/listRegions.sh
-[testOCI.sh]: testOCI.sh
+[testCreateDelete.sh]: testCreateDelete.sh
+[testExportImport.sh]: testExportImport.sh
