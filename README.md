@@ -11,8 +11,26 @@ See the [OIC documentation] for details.
 This image is built on top of the [Python:3-slim] image.
 A [github project][GitHub] contains the build instructions if a customized image is required.
 
+
+## Running the Image
+To run the image use the command
+
+    docker run -v $HOME/.oci:/root/.oci:ro -v <CONFIG_DIRECTORY>:/oic/configs:ro --name CloneOICScripts -it --rm antonyjreynolds/cloneoic:0.9
+
+This assumes the OCI config file and keys files are in $HOME/.oci and that config files with default values are in <CONFIG_DIRECTORY>.
+The config files can be copied from oic_env.sh and edited to set appropriate values.
+For example there may be a config file melbourne_oic_config.sh that can be set by running
+
+    . configs/melbourne_oic_config.sh
+
+Another file may be called ashburn_oic_config.sh and that can be selected by running
+
+    . configs/ashburn_oic_config.sh
+
+
 ## Scripts
-Following scripts are provided:
+
+The following scripts are provided:
 
 | Script | Description |
 | ------: | ----------- |
