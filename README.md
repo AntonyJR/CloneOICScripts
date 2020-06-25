@@ -55,6 +55,8 @@ The following scripts are provided:
 | [listRegions.sh] | List OCI Regions |
 | [testCreateDelete.sh] | Tests for creating and deleting OIC scripts |
 | [testExportImport.sh] | Tests for exporting and importing OIC scripts |
+| | MANAGE USERS FOR OIC |
+| [getApplication.sh] | Get IDCS application associated with OIC instance |
 
 
 
@@ -85,16 +87,16 @@ The following environment variables are set in the [env.sh] file.
 | TGT_OIC_PASSWORD | IDCS Password | [import.sh] [importStatus.sh] |
 | IMPORT_STATE / Status of Imported integrations.  Valid Values are :  | [import.sh] |
 | CURL_FLAGS | Flags passed to curl command | [import.sh], [importStatus.sh], [listBucket.sh], [export.sh], [exportStatus.sh] |
-| INTEGRATION_ID | OCID of Integration Instance | [getIntegration.sh], [deleteIntegration.sh], [getIntegration.sh], [getWorkRequest.sh] |
+| INTEGRATION_ID | OCID of Integration Instance | [getIntegration.sh], [deleteIntegration.sh], [getIntegration.sh], [getWorkRequest.sh], [getApplication.sh] |
 | COMPARTMENT_ID | OCID of Compartment | [createIntegration.sh], [listIntegrations.sh] |
-| REGION | OCI Region | [createIntegration.sh], [deleteIntegration.sh], [getIntegration.sh], [getWorkRequest.sh], [listIntegrations.sh] |
+| REGION | OCI Region | [createIntegration.sh], [deleteIntegration.sh], [getIntegration.sh], [getWorkRequest.sh], [listIntegrations.sh], [getApplication.sh] |
 | DISPLAY_NAME | Name of New OIC Instance | [createIntegration.sh] |
 | IS_BYOL | BYOL Flag for OIC (true or false) | [createIntegration.sh] |
 | MESSAGE_PACKS | Number of Message Packs for OIC | [createIntegration.sh] |
 | TYPE | OIC Edition (ENTERPRISE or STANDARD) | [createIntegration.sh] |
-| IDCS_URL | IDCS host (https://idcs-hostname) | [createIntegration.sh] |
-| IDCS_CLIENT_ID | OAuth Client ID | [createIntegration.sh] |
-| IDCS_CLIENT_SECRET | OAuth Client Secret | [createIntegration.sh] |
+| IDCS_URL | IDCS host (https://idcs-hostname) | [createIntegration.sh], [getApplication.sh] |
+| IDCS_CLIENT_ID | OAuth Client ID | [createIntegration.sh], [getApplication.sh] |
+| IDCS_CLIENT_SECRET | OAuth Client Secret | [createIntegration.sh], [getApplication.sh] |
 | IDCS_USERNAME | IDCS Username | [createIntegration.sh] |
 | IDCS_PASSWORD | IDCS Password | [createIntegration.sh] |
 | WORK_REQUEST_ID | Work Request ID from Delete & Create Operations | [getWorkRequest.sh] |
@@ -364,6 +366,7 @@ Empty Response
 [listCompartments.sh]: scripts/listCompartments.sh
 [listIntegrations.sh]: scripts/listIntegrations.sh
 [listRegions.sh]: scripts/listRegions.sh
+[getApplication.sh]: scripts/getApplication.sh
 [testCreateDelete.sh]: testCreateDelete.sh
 [testExportImport.sh]: testExportImport.sh
 

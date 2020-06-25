@@ -134,7 +134,7 @@ get_tgt_oic_credentials() {
 }
 
 # Generate SRC_OIC_HOST
-get_src_oic_host () {
+get_src_oic_host() {
   if [ "$1" != "" ]; then
     SRC_OIC_HOST="$1"
   fi
@@ -142,7 +142,7 @@ get_src_oic_host () {
 }
 
 # Generate TGT_OIC_HOST
-get_tgt_oic_host () {
+get_tgt_oic_host() {
   if [ "$1" != "" ]; then
     TGT_OIC_HOST="$1"
   fi
@@ -241,8 +241,9 @@ get_type() {
   fi
 }
 
-# GET IDCS_AT
-get_idcs_at() {
+# GET IDCS_AT_PWD
+# OAuth Password Grant Type (don't ask....)
+get_idcs_at_pwd() {
   if [ "$1" != "" ]; then
     IDCS_URL="$1"
   fi
@@ -255,7 +256,7 @@ get_idcs_at() {
   if [ "$4" != "" ]; then
     IDCS_USERNAME="$4"
   fi
-  if [ "$3" != "" ]; then
+  if [ "$5" != "" ]; then
     IDCS_PASSWORD="$5"
   fi
   read_if_empty IDCS_URL "IDCS_URL ( https://some.url ) > "
@@ -264,7 +265,26 @@ get_idcs_at() {
   read_if_empty IDCS_USERNAME "IDCS Username > "
   read_if_empty IDCS_PASSWORD "IDCS Password > " -s
 
-  IDCS_AT=`curl "${CURL_FLAGS}" -u "$IDCS_CLIENT_ID:$IDCS_CLIENT_SECRET" -H "Content-Type: application/x-www-form-urlencoded;charset=UTF-8" --request POST $IDCS_URL/oauth2/v1/token -d "grant_type=password&scope=urn:opc:idm:__myscopes__&username=${IDCS_USERNAME}&password=${IDCS_PASSWORD}" | jq -r ".access_token"`
+  IDCS_AT_PWD=$(curl "${CURL_FLAGS}" -u "$IDCS_CLIENT_ID:$IDCS_CLIENT_SECRET" $IDCS_URL/oauth2/v1/token -d "grant_type=password&scope=urn:opc:idm:__myscopes__&username=${IDCS_USERNAME}&password=${IDCS_PASSWORD}" | jq -r ".access_token")
+}
+
+# GET IDCS_AT_CC
+# OAuth Client Credentials Grant Type
+get_idcs_at_cc() {
+  if [ "$1" != "" ]; then
+    IDCS_URL="$1"
+  fi
+  if [ "$2" != "" ]; then
+    IDCS_CLIENT_ID="$2"
+  fi
+  if [ "$3" != "" ]; then
+    IDCS_CLIENT_SECRET="$3"
+  fi
+  read_if_empty IDCS_URL "IDCS_URL ( https://some.url ) > "
+  read_if_empty IDCS_CLIENT_ID "IDCS Client ID > "
+  read_if_empty IDCS_CLIENT_SECRET "IDCS Client Secret > " -s
+
+  IDCS_AT_CC=$(curl "${CURL_FLAGS}" -u "$IDCS_CLIENT_ID:$IDCS_CLIENT_SECRET" $IDCS_URL/oauth2/v1/token -d "grant_type=client_credentials&scope=urn:opc:idm:__myscopes__" | jq -r ".access_token")
 }
 
 # GET WORK_REQUEST_ID
