@@ -241,9 +241,9 @@ get_type() {
   fi
 }
 
-# GET IDCS_AT_PWD
+# GET IDCS
 # OAuth Password Grant Type (don't ask....)
-get_idcs_at_pwd() {
+get_idcs() {
   if [ "$1" != "" ]; then
     IDCS_URL="$1"
   fi
@@ -253,15 +253,21 @@ get_idcs_at_pwd() {
   if [ "$3" != "" ]; then
     IDCS_CLIENT_SECRET="$3"
   fi
+  read_if_empty IDCS_URL "IDCS_URL ( https://some.url ) > "
+  read_if_empty IDCS_CLIENT_ID "IDCS Client ID > "
+  read_if_empty IDCS_CLIENT_SECRET "IDCS Client Secret > " -s
+}
+
+# GET IDCS_AT_PWD
+# OAuth Password Grant Type (don't ask....)
+get_idcs_at_pwd() {
+  get_idcs $1 $1 $3
   if [ "$4" != "" ]; then
     IDCS_USERNAME="$4"
   fi
   if [ "$5" != "" ]; then
     IDCS_PASSWORD="$5"
   fi
-  read_if_empty IDCS_URL "IDCS_URL ( https://some.url ) > "
-  read_if_empty IDCS_CLIENT_ID "IDCS Client ID > "
-  read_if_empty IDCS_CLIENT_SECRET "IDCS Client Secret > " -s
   read_if_empty IDCS_USERNAME "IDCS Username > "
   read_if_empty IDCS_PASSWORD "IDCS Password > " -s
 
@@ -271,18 +277,7 @@ get_idcs_at_pwd() {
 # GET IDCS_AT_CC
 # OAuth Client Credentials Grant Type
 get_idcs_at_cc() {
-  if [ "$1" != "" ]; then
-    IDCS_URL="$1"
-  fi
-  if [ "$2" != "" ]; then
-    IDCS_CLIENT_ID="$2"
-  fi
-  if [ "$3" != "" ]; then
-    IDCS_CLIENT_SECRET="$3"
-  fi
-  read_if_empty IDCS_URL "IDCS_URL ( https://some.url ) > "
-  read_if_empty IDCS_CLIENT_ID "IDCS Client ID > "
-  read_if_empty IDCS_CLIENT_SECRET "IDCS Client Secret > " -s
+  get_idcs $1 $1 $3
 
   IDCS_AT_CC=$(curl "${CURL_FLAGS}" -u "$IDCS_CLIENT_ID:$IDCS_CLIENT_SECRET" $IDCS_URL/oauth2/v1/token -d "grant_type=client_credentials&scope=urn:opc:idm:__myscopes__" | jq -r ".access_token")
 }
@@ -293,4 +288,48 @@ get_work_request() {
     WORK_REQUEST_ID="$1"
   fi
   read_if_empty WORK_REQUEST_ID "Work Request ID > "
+}
+
+# GET GROUP_NAME
+get_group_name() {
+  if [ "$1" != "" ]; then
+    GROUP_NAME="$1"
+  fi
+  read_if_empty GROUP_NAME "Group Name > "
+}
+
+# GET GROUP_ID
+get_group_id() {
+  get_group_name $1
+  GROUP_ID=`curl ${CURL_FLAGS} -H "Authorization: Bearer ${IDCS_AT_CC}" ${IDCS_URL}/admin/v1/Groups?filter=displayName+eq+%22${GROUP_NAME}%22 | jq -r ".Resources[0].id"`
+}
+
+# GET USERNAME_BASE
+get_username_base() {
+  if [ "$1" != "" ]; then
+    USERNAME_BASE="$1"
+  fi
+  read_if_empty USERNAME_BASE "Username Base > "
+}
+
+# GET USER_PASSWORD
+get_user_password() {
+  if [ "$1" != "" ]; then
+    USER_PASSWORD="$1"
+  fi
+  read_if_empty USER_PASSWORD "User Password > " -s
+}
+
+# GET USERNAME
+get_username() {
+  if [ "$1" != "" ]; then
+    USERNAME="$1"
+  fi
+  read_if_empty USERNAME "Username > "
+}
+
+# GET USER_ID
+get_user_id() {
+  get_username $1
+  USER_ID=`curl ${CURL_FLAGS} -H "Authorization: Bearer ${IDCS_AT_CC}" ${IDCS_URL}/admin/v1/Users?filter=userName+eq+%22${USERNAME}%22 | jq -r ".Resources[0].id"`
 }
